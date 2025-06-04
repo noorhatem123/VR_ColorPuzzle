@@ -3,6 +3,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class XRSocketTagInteractor : XRSocketInteractor
 {
+    [Tooltip("Only objects with this tag can be snapped into this socket.")]
     public string targetTag;
 
     public override bool CanHover(XRBaseInteractable interactable)
