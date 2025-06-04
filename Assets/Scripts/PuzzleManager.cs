@@ -26,6 +26,14 @@ public class PuzzleManager : MonoBehaviour
 
             if (successSound != null)
                 successSound.Play();
+
+            // Show the restart button
+            FindObjectOfType<PuzzleReset>().ShowRestart();
         }
+    }
+
+    public void ResetState()
+    {
+        placedCount = 0;
     }
 }
