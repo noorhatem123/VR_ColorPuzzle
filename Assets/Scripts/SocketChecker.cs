@@ -6,15 +6,37 @@ public class SocketChecker : MonoBehaviour
     public string correctTag;
     public AudioSource wrongAudio;
 
+    private bool isOccupied = false;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag(correctTag))
+        if (isOccupied)
+            return;
+
+        if (other.CompareTag(correctTag))
         {
-            // Wrong cube → move back and buzz
+            Rigidbody rb = other.GetComponent<Rigidbody>();
+            if (rb != null)
+                rb.isKinematic = true;
+
+            // 👇 Detach the cube from the socket
+            other.transform.parent = null;
+
+            PlacedFlag flag = other.GetComponent<PlacedFlag>();
+            if (flag != null && !flag.isPlaced)
+            {
+                flag.isPlaced = true;
+                PuzzleManager.Instance.MarkCubePlaced();
+                isOccupied = true;
+            }
+        }
+        else
+        {
             OriginalPosition original = other.GetComponent<OriginalPosition>();
             if (original != null)
             {
                 other.transform.position = original.startPos;
+
                 Rigidbody rb = other.GetComponent<Rigidbody>();
                 if (rb != null)
                 {
@@ -23,15 +45,8 @@ public class SocketChecker : MonoBehaviour
                 }
             }
 
-            if (wrongAudio != null) wrongAudio.Play();
-        }
-        else
-        {
-            // Right cube → lock in place
-            Rigidbody rb = other.GetComponent<Rigidbody>();
-            if (rb != null) rb.isKinematic = true;
-
-            PuzzleManager.Instance.MarkCubePlaced();
+            if (wrongAudio != null)
+                wrongAudio.Play();
         }
     }
 }

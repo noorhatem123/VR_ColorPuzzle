@@ -4,15 +4,17 @@ public class PuzzleManager : MonoBehaviour
 {
     public static PuzzleManager Instance;
 
-    private int placedCount = 0;
     public int totalCubes = 3;
-
     public GameObject successMessage;
+    public GameObject restartButton; // 🎯 Now directly assigned in Inspector
     public AudioSource successSound;
+
+    private int placedCount = 0;
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
     }
 
     public void MarkCubePlaced()
@@ -27,12 +29,12 @@ public class PuzzleManager : MonoBehaviour
             if (successSound != null)
                 successSound.Play();
 
-            // Show the restart button
-            FindObjectOfType<PuzzleReset>().ShowRestart();
+            if (restartButton != null)
+                restartButton.SetActive(true); // 🎯 Trigger reset button here
         }
     }
 
-    public void ResetState()
+    public void ResetPlacedCount()
     {
         placedCount = 0;
     }
